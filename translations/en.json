@@ -1,0 +1,31 @@
+{
+  "title": "Alarm Control (UI)",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Alarm einrichten",
+        "description": "Sensoren, Personen/Zonen, Zeiten und Helfer auswählen."
+      },
+      "options_main": {
+        "title": "Geräteaktionen",
+        "description": "Geräte wählen und Schnappschuss konfigurieren."
+      },
+      "options_actions": {
+        "title": "Benachrichtigungen",
+        "description": "Notify-Kanäle, Titel, Nachricht, persistent."
+      }
+    }
+  },
+  "repairs": {
+    "issue": {
+      "dashboard_missing": {
+        "title": "Alarm dashboard is missing",
+        "fix_flow": {
+          "confirm": {
+            "description": "Creates a dashboard at /config/www/alarmcontrol_dashboard.yaml. Add it under Settings → Dashboards as a YAML dashboard."
+          }
+        }
+      }
+    }
+  }
+}

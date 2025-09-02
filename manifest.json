@@ -1,0 +1,17 @@
+{
+  "domain": "alarmcontrol",
+  "name": "Alarm Control (UI)",
+  "version": "0.5.0",
+  "documentation": "https://github.com/Bigdaddy1990/alarmcontrol",
+  "issue_tracker": "https://github.com/Bigdaddy1990/alarmcontrol/issues",
+  "codeowners": [
+    "@Bigdaddy1990"
+  ],
+  "iot_class": "local_push",
+  "config_flow": true,
+  "requirements": [],
+  "dependencies": [],
+  "after_dependencies": [
+    "frontend"
+  ]
+}
