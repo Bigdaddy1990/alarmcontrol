@@ -1,1 +1,51 @@
+ci:
+  autoupdate_schedule: monthly
+  autofix_prs: true
 
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.8
+    hooks:
+      # 1) Lint + Fix (inkl. unsichere Fixes EINMALIG freigeben)
+      - id: ruff-check
+        args: [--fix, --unsafe-fixes]
+        types_or: [python, pyi]
+      # 2) Danach formatieren
+      - id: ruff-format
+        types_or: [python, pyi]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+        # Home Assistant nutzt Custom-Tags wie !input → per --unsafe erlauben
+        args: [--unsafe, --allow-multiple-documents]
+        # Blueprints & Beispiele optional ausnehmen (enthalten teils bewusst spezielle Syntax)
+        exclude: ^(blueprints/|examples/)
+      - id: check-json
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+        args:
+          - --ignore-words-list=hass,hassio,homeassistant,zigbee,zha,ist,ende,alle,adresse,unter,als,startet,sie,oder,manuell,tage,ordner,probleme,ser
+          - --skip=./.*,*.csv,*.json,*.min.js,*.map,*.md
+          - --quiet-level=2
+        exclude: |
+          (?x)^(
+            tests/fixtures/|
+            .*/snapshots/|
+            .*/translations/|
+            .*/.git/|
+            .*/.tox/|
+            .*/.venv/|
+            dist/|
+            build/|
+            .*/node_modules/
+          )
