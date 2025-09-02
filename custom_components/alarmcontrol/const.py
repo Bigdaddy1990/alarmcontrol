@@ -11,6 +11,7 @@ CONF_MANUAL_ARM_SWITCH = "manual_arm_switch_entity"
 CONF_AUTO_ARM_ALL_AWAY = "auto_arm_all_away"
 CONF_AUTO_DISARM_ANY_HOME = "auto_disarm_on_any_home"
 CONF_PERSONS = "persons"
+CONF_SAFE_ZONES = "safe_zones"
 CONF_ARM_SCHEDULE_ENABLE = "arm_schedule_enable"
 CONF_TIME_START = "arm_time_start"
 CONF_TIME_END = "arm_time_end"
@@ -40,6 +41,9 @@ CONF_SWITCHES = "switches"
 CONF_SCENES = "scenes"
 CONF_SCRIPTS = "scripts"
 
+CONF_MEDIA_ALARM_URL = "media_alarm_url"
+CONF_MEDIA_VOLUME = "media_volume"
+
 DEFAULTS = {
     CONF_NAME: "Alarm Control",
     CONF_AUTO_ARM_ALL_AWAY: True,
@@ -59,3 +63,16 @@ DEFAULTS = {
     CONF_PERSISTENT: True,
     CONF_BRIGHTNESS: 255,
 }
+
+CONF_NOTIFY_TARGETS = "notify_targets"  # list of notify.* entities for notify.send_message
+CONF_NOTIFY_LEGACY_CSV = "notify_services_csv"  # keep for legacy services
+CONF_TTS_ENTITIES = "tts_entities"  # list of tts.* entities to use with tts.speak
+CONF_TTS_LANGUAGE = "tts_language"
+CONF_TTS_MESSAGE = "tts_message"
+
+ATTR_LAST_TRIGGER = "last_trigger_entity"
+ATTR_LAST_SNAPSHOT = "last_snapshot_url"
+ATTR_COOLDOWN_UNTIL = "cooldown_until"
+
+SERVICE_GENERATE_DASHBOARD = "generate_dashboard"
+DASHBOARD_FILENAME_DEFAULT = "/config/www/alarmcontrol_dashboard.yaml"

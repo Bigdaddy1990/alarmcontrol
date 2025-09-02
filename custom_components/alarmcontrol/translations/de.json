@@ -4,15 +4,27 @@
     "step": {
       "user": {
         "title": "Alarm einrichten",
-        "description": "Sensoren, Personen/Zonen, Zeiten und Helfer ausw\u00e4hlen."
+        "description": "Sensoren, Personen/Zonen, Zeiten und Helfer auswählen."
       },
       "options_main": {
-        "title": "Ger\u00e4teaktionen",
-        "description": "Ger\u00e4te w\u00e4hlen und Schnappschuss konfigurieren."
+        "title": "Geräteaktionen",
+        "description": "Geräte wählen und Schnappschuss konfigurieren."
       },
       "options_actions": {
         "title": "Benachrichtigungen",
-        "description": "Notify-Kan\u00e4le, Titel, Nachricht, persistent."
+        "description": "Notify-Kanäle, Titel, Nachricht, persistent."
+      }
+    }
+  },
+  "repairs": {
+    "issue": {
+      "dashboard_missing": {
+        "title": "Alarm-Dashboard fehlt",
+        "fix_flow": {
+          "confirm": {
+            "description": "Erstellt ein Dashboard unter /config/www/alarmcontrol_dashboard.yaml. Füge es danach unter Einstellungen → Dashboards als YAML-Dashboard hinzu."
+          }
+        }
       }
     }
   }

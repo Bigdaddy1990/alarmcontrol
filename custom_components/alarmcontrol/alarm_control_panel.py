@@ -32,12 +32,12 @@ from .const import (
     CONF_NAME,
     CONF_ARMED_HELPER, CONF_MANUAL_ARM_SWITCH,
     CONF_AUTO_ARM_ALL_AWAY, CONF_AUTO_DISARM_ANY_HOME,
-    CONF_PERSONS, CONF_ARM_SCHEDULE_ENABLE, CONF_TIME_START, CONF_TIME_END,
+    CONF_PERSONS, CONF_SAFE_ZONES, CONF_ARM_SCHEDULE_ENABLE, CONF_TIME_START, CONF_TIME_END,
     CONF_EXIT, CONF_ENTRY, CONF_DURATION, CONF_COOLDOWN,
     CONF_INSTANT, CONF_DELAYED,
     CONF_CAMERAS, CONF_SEND_SNAPSHOT, CONF_SNAPSHOT_PATH,
     CONF_NOTIFY_SERVICES_CSV, CONF_NOTIFY_TITLE, CONF_NOTIFY_MESSAGE, CONF_PERSISTENT,
-    CONF_LIGHTS, CONF_BRIGHTNESS, CONF_SIRENS, CONF_MEDIA_PLAYERS, CONF_SWITCHES, CONF_SCENES, CONF_SCRIPTS,
+    CONF_LIGHTS, CONF_BRIGHTNESS, CONF_SIRENS, CONF_MEDIA_PLAYERS, CONF_MEDIA_ALARM_URL, CONF_MEDIA_VOLUME, CONF_SWITCHES, CONF_SCENES, CONF_SCRIPTS, CONF_NOTIFY_TARGETS, CONF_NOTIFY_LEGACY_CSV, CONF_TTS_ENTITIES, CONF_TTS_LANGUAGE, CONF_TTS_MESSAGE, ATTR_LAST_TRIGGER, ATTR_LAST_SNAPSHOT, ATTR_COOLDOWN_UNTIL, SERVICE_GENERATE_DASHBOARD, DASHBOARD_FILENAME_DEFAULT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -59,6 +59,7 @@ class _Config:
     auto_arm_all_away: bool
     auto_disarm_any_home: bool
     persons: list[str]
+    safe_zones: list[str]
     arm_schedule_enable: bool
     t_start: time | None
     t_end: time | None
@@ -83,9 +84,17 @@ class _Config:
     brightness: int
     sirens: list[str]
     media_players: list[str]
+    media_alarm_url: str
+    media_volume: float
     switches: list[str]
     scenes: list[str]
     scripts: list[str]
+    # notify/tts
+    notify_targets: list[str]
+    notify_legacy_csv: str
+    tts_entities: list[str]
+    tts_language: str
+    tts_message: str
 
 
 class AlarmControl(AlarmControlPanelEntity):
@@ -100,6 +109,15 @@ class AlarmControl(AlarmControlPanelEntity):
         self._attr_unique_id = entry.entry_id
         self._attr_name = entry.options.get(CONF_NAME, DEFAULTS[CONF_NAME])
         self._state = STATE_ALARM_DISARMED
+        self._attr_code_arm_required = False
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, entry.entry_id)},
+            "manufacturer": "alarmcontrol",
+            "model": "Alarm Control Virtual",
+            "name": self._attr_name,
+        }
+        self._last_trigger: str | None = None
+        self._last_snapshot: str | None = None
         self._unsubs: list[callable] = []
         self._cooldown_until: float = 0.0
 
@@ -107,8 +125,7 @@ class AlarmControl(AlarmControlPanelEntity):
     def state(self) -> str | None:
         return self._state
 
-    async def async_added_to_hass(self) -> None:
-        await self._rebind()
+        async def async_added_to_hass(self) -> None:
 
     async def async_will_remove_from_hass(self) -> None:
         for u in self._unsubs:
@@ -150,6 +167,7 @@ class AlarmControl(AlarmControlPanelEntity):
             auto_arm_all_away=bool(opt.get(CONF_AUTO_ARM_ALL_AWAY, True)),
             auto_disarm_any_home=bool(opt.get(CONF_AUTO_DISARM_ANY_HOME, True)),
             persons=list(opt.get(CONF_PERSONS, [])),
+                safe_zones=list(opt.get(CONF_SAFE_ZONES, [])),
             arm_schedule_enable=bool(opt.get(CONF_ARM_SCHEDULE_ENABLE, False)),
             t_start=t_start,
             t_end=t_end,
@@ -170,9 +188,16 @@ class AlarmControl(AlarmControlPanelEntity):
             brightness=int(opt.get(CONF_BRIGHTNESS)),
             sirens=list(opt.get(CONF_SIRENS, [])),
             media_players=list(opt.get(CONF_MEDIA_PLAYERS, [])),
+                media_alarm_url=str(opt.get(CONF_MEDIA_ALARM_URL, "")),
+                media_volume=float(opt.get(CONF_MEDIA_VOLUME, 0.6)),
             switches=list(opt.get(CONF_SWITCHES, [])),
             scenes=list(opt.get(CONF_SCENES, [])),
             scripts=list(opt.get(CONF_SCRIPTS, [])),
+            notify_targets=list(opt.get(CONF_NOTIFY_TARGETS, [])),
+            notify_legacy_csv=str(opt.get(CONF_NOTIFY_LEGACY_CSV, "")),
+            tts_entities=list(opt.get(CONF_TTS_ENTITIES, [])),
+            tts_language=str(opt.get(CONF_TTS_LANGUAGE, "")),
+            tts_message=str(opt.get(CONF_TTS_MESSAGE, "")),
         )
 
     async def _rebind(self) -> None:
@@ -260,18 +285,21 @@ class AlarmControl(AlarmControlPanelEntity):
         return self._state in (STATE_ALARM_ARMING, STATE_ALARM_ARMED_AWAY, STATE_ALARM_ARMED_NIGHT)
 
     def _any_person_home(self, cfg: _Config) -> bool:
+        # home or in any safe zone
+        zones = {'home'} | {z.split('.',1)[1] for z in cfg.safe_zones}
         for eid in cfg.persons:
             st: State | None = self.hass.states.get(eid)
-            if st and st.state == "home":
+            if st and st.state in zones:
                 return True
         return False
 
     def _all_persons_away(self, cfg: _Config) -> bool:
+        zones = {'home'} | {z.split('.',1)[1] for z in cfg.safe_zones}
         if not cfg.persons:
             return False
         for eid in cfg.persons:
             st: State | None = self.hass.states.get(eid)
-            if not st or st.state == "home":
+            if not st or st.state in zones:
                 return False
         return True
 
@@ -290,6 +318,8 @@ class AlarmControl(AlarmControlPanelEntity):
             return
 
         self._set_state(STATE_ALARM_TRIGGERED)
+        if source:
+            self._last_trigger = source.entity_id
         await self._run_actions(source, cfg)
 
         await asyncio.sleep(cfg.duration)
@@ -329,6 +359,7 @@ class AlarmControl(AlarmControlPanelEntity):
             filename = f"{cfg.snapshot_path}/alarm_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
             await self.hass.services.async_call("camera", "snapshot", {"entity_id": cam, "filename": filename}, blocking=True)
             snapshot_local = "/local" + filename[7:] if filename.startswith("/config/www") else filename
+            self._last_snapshot = snapshot_local
 
         services = [s.strip() for s in (cfg.notify_services_csv or "").split(",") if s.strip()]
 
@@ -342,6 +373,14 @@ class AlarmControl(AlarmControlPanelEntity):
         title = title_t.async_render(ctx, parse_result=False) if isinstance(cfg.notify_title, str) else "ALARM"
         message = msg_t.async_render(ctx, parse_result=False) if isinstance(cfg.notify_message, str) else "Alarm"
 
+        notify_targets = cfg.notify_targets or []
+        # New notify entity API
+        if self.hass.services.has_service("notify", "send_message") and notify_targets:
+            data: dict[str, Any] = {"message": message, "title": title}
+            if snapshot_local:
+                data["data"] = {"image": snapshot_local}
+            await self.hass.services.async_call("notify", "send_message", {"entity_id": notify_targets, **data}, blocking=False)
+        # Legacy notify services fallback
         for svc in services:
             if "." not in svc:
                 continue
@@ -360,3 +399,11 @@ class AlarmControl(AlarmControlPanelEntity):
             await self.hass.services.async_call("light", "turn_off", {ATTR_ENTITY_ID: cfg.lights}, blocking=False)
         if cfg.sirens:
             await self.hass.services.async_call("siren", "turn_off", {ATTR_ENTITY_ID: cfg.sirens}, blocking=False)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        return {
+            ATTR_LAST_TRIGGER: self._last_trigger,
+            ATTR_LAST_SNAPSHOT: self._last_snapshot,
+            ATTR_COOLDOWN_UNTIL: self._cooldown_until,
+        }
