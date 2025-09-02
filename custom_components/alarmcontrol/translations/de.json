@@ -4,7 +4,7 @@
     "step": {
       "user": {
         "title": "Alarm einrichten",
-        "description": "Sensoren, Personen/Zonen und Zeitfenster w\u00e4hlen."
+        "description": "Sensoren, Personen/Zonen, Zeiten und Helfer ausw\u00e4hlen."
       },
       "options_main": {
         "title": "Ger\u00e4teaktionen",
@@ -12,7 +12,7 @@
       },
       "options_actions": {
         "title": "Benachrichtigungen",
-        "description": "Notify-Kan\u00e4le und persistente Meldung."
+        "description": "Notify-Kan\u00e4le, Titel, Nachricht, persistent."
       }
     }
   }

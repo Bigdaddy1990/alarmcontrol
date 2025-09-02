@@ -3,16 +3,16 @@
   "config": {
     "step": {
       "user": {
-        "title": "Set up alarm",
-        "description": "Select sensors, people/zones, and time window."
+        "title": "Alarm einrichten",
+        "description": "Sensoren, Personen/Zonen, Zeiten und Helfer ausw\u00e4hlen."
       },
       "options_main": {
-        "title": "Device actions",
-        "description": "Pick devices and snapshot options."
+        "title": "Ger\u00e4teaktionen",
+        "description": "Ger\u00e4te w\u00e4hlen und Schnappschuss konfigurieren."
       },
       "options_actions": {
-        "title": "Notifications",
-        "description": "Notify channels and persistent message."
+        "title": "Benachrichtigungen",
+        "description": "Notify-Kan\u00e4le, Titel, Nachricht, persistent."
       }
     }
   }

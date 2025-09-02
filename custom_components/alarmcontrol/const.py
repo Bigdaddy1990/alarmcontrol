@@ -1,38 +1,50 @@
-
 from __future__ import annotations
 
 DOMAIN: str = "alarmcontrol"
 PLATFORMS: list[str] = ["alarm_control_panel"]
 
+# Blueprint-aligned option keys
 CONF_NAME = "name"
-CONF_INSTANT = "instant_sensors"
-CONF_DELAYED = "delayed_sensors"
+CONF_ARMED_HELPER = "armed_helper_entity"
+CONF_MANUAL_ARM_SWITCH = "manual_arm_switch_entity"
+
+CONF_AUTO_ARM_ALL_AWAY = "auto_arm_all_away"
+CONF_AUTO_DISARM_ANY_HOME = "auto_disarm_on_any_home"
 CONF_PERSONS = "persons"
-CONF_SAFE_ZONES = "safe_zones"
-CONF_USE_WINDOW = "use_time_window"
+CONF_ARM_SCHEDULE_ENABLE = "arm_schedule_enable"
 CONF_TIME_START = "arm_time_start"
 CONF_TIME_END = "arm_time_end"
+
 CONF_EXIT = "exit_delay"
 CONF_ENTRY = "entry_delay"
 CONF_DURATION = "alarm_duration"
 CONF_COOLDOWN = "retrigger_cooldown"
-CONF_CAMERAS = "cameras"
+
+CONF_INSTANT = "instant_sensors"
+CONF_DELAYED = "delayed_sensors"
+
+CONF_CAMERAS = "camera_entities"
 CONF_SEND_SNAPSHOT = "send_snapshot"
 CONF_SNAPSHOT_PATH = "snapshot_path"
 
-CONF_NOTIFY_SERVICES = "notify_services"
+CONF_NOTIFY_SERVICES_CSV = "notify_services_csv"
+CONF_NOTIFY_TITLE = "notify_title"
+CONF_NOTIFY_MESSAGE = "notify_message"
 CONF_PERSISTENT = "persistent_enable"
+
 CONF_LIGHTS = "lights"
 CONF_BRIGHTNESS = "light_brightness"
 CONF_SIRENS = "sirens"
+CONF_MEDIA_PLAYERS = "media_players"
 CONF_SWITCHES = "switches"
 CONF_SCENES = "scenes"
 CONF_SCRIPTS = "scripts"
-CONF_MEDIA_PLAYERS = "media_players"
 
 DEFAULTS = {
     CONF_NAME: "Alarm Control",
-    CONF_USE_WINDOW: False,
+    CONF_AUTO_ARM_ALL_AWAY: True,
+    CONF_AUTO_DISARM_ANY_HOME: True,
+    CONF_ARM_SCHEDULE_ENABLE: False,
     CONF_TIME_START: "22:00:00",
     CONF_TIME_END: "06:00:00",
     CONF_EXIT: 30,
@@ -41,7 +53,9 @@ DEFAULTS = {
     CONF_COOLDOWN: 60,
     CONF_SEND_SNAPSHOT: True,
     CONF_SNAPSHOT_PATH: "/config/www/snapshots",
-    CONF_NOTIFY_SERVICES: [],
+    CONF_NOTIFY_SERVICES_CSV: "notify.persistent_notification",
+    CONF_NOTIFY_TITLE: "ALARM",
+    CONF_NOTIFY_MESSAGE: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }} — Alarm von {{ source_entity if source_entity else 'unbekannt' }}",
     CONF_PERSISTENT: True,
     CONF_BRIGHTNESS: 255,
 }
