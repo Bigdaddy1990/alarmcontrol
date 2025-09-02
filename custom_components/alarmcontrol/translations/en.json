@@ -1,0 +1,19 @@
+{
+  "title": "Alarm Control (UI)",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up alarm",
+        "description": "Select sensors, people/zones, and time window."
+      },
+      "options_main": {
+        "title": "Device actions",
+        "description": "Pick devices and snapshot options."
+      },
+      "options_actions": {
+        "title": "Notifications",
+        "description": "Notify channels and persistent message."
+      }
+    }
+  }
+}

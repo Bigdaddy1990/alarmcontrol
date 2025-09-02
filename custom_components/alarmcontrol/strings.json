@@ -1,0 +1,19 @@
+{
+  "title": "Alarm Control (UI)",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Alarm einrichten",
+        "description": "Sensoren, Personen/Zonen und Zeitfenster w\u00e4hlen."
+      },
+      "options_main": {
+        "title": "Ger\u00e4teaktionen",
+        "description": "Ger\u00e4te w\u00e4hlen und Schnappschuss konfigurieren."
+      },
+      "options_actions": {
+        "title": "Benachrichtigungen",
+        "description": "Notify-Kan\u00e4le und persistente Meldung."
+      }
+    }
+  }
+}
