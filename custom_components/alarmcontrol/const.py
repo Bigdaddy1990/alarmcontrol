@@ -64,7 +64,9 @@ DEFAULTS = {
     CONF_BRIGHTNESS: 255,
 }
 
-CONF_NOTIFY_TARGETS = "notify_targets"  # list of notify.* entities for notify.send_message
+CONF_NOTIFY_TARGETS = (
+    "notify_targets"  # list of notify.* entities for notify.send_message
+)
 CONF_NOTIFY_LEGACY_CSV = "notify_services_csv"  # keep for legacy services
 CONF_TTS_ENTITIES = "tts_entities"  # list of tts.* entities to use with tts.speak
 CONF_TTS_LANGUAGE = "tts_language"
