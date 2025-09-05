@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.typing import ConfigType
 
-from .const import DOMAIN, PLATFORMS, DASHBOARD_FILENAME_DEFAULT
+from .const import DASHBOARD_FILENAME_DEFAULT, DOMAIN, PLATFORMS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -20,9 +20,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 def _dashboard_exists(hass: HomeAssistant) -> bool:
     try:
         from pathlib import Path
+
         return Path(DASHBOARD_FILENAME_DEFAULT).exists()
     except Exception:
         return False
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})

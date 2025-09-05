@@ -73,4 +73,4 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional("generate_dashboard", default=True): selector({"boolean": {}}),
             })
             return self.async_show_form(step_id=STEP_OPTIONS_ASSISTANT, data_schema=schema)
-    
+
