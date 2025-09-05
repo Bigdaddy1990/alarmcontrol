@@ -3,16 +3,28 @@
   "config": {
     "step": {
       "user": {
-        "title": "Set up alarm",
-        "description": "Select sensors, people/zones, and time window."
+        "title": "Alarm einrichten",
+        "description": "Sensoren, Personen/Zonen, Zeiten und Helfer auswählen."
       },
       "options_main": {
-        "title": "Device actions",
-        "description": "Pick devices and snapshot options."
+        "title": "Geräteaktionen",
+        "description": "Geräte wählen und Schnappschuss konfigurieren."
       },
       "options_actions": {
-        "title": "Notifications",
-        "description": "Notify channels and persistent message."
+        "title": "Benachrichtigungen",
+        "description": "Notify-Kanäle, Titel, Nachricht, persistent."
+      }
+    }
+  },
+  "repairs": {
+    "issue": {
+      "dashboard_missing": {
+        "title": "Alarm dashboard is missing",
+        "fix_flow": {
+          "confirm": {
+            "description": "Creates a dashboard at /config/www/alarmcontrol_dashboard.yaml. Add it under Settings → Dashboards as a YAML dashboard."
+          }
+        }
       }
     }
   }
